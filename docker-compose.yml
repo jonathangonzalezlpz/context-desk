@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   api:
     build:
@@ -9,9 +7,11 @@ services:
       - "8000:8000"
     volumes:
       - ./backend/src:/app/backend/src
+      - ./knowledge:/app/knowledge
     environment:
       - DATABASE_URL=postgresql://user:password@db:5432/contextdesk_db
       - QDRANT_URL=http://qdrant:6333
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
     depends_on:
       db:
         condition: service_healthy

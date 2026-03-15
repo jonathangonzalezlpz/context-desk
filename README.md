@@ -4,6 +4,8 @@
 
 Este chatbot está diseñado para negocios con regulaciones o restricciones fuertes sobre los temas que su IA puede tratar, usando RAG híbrido y Guardrails duros, aislados de los Endpoints (Arquitectura Hexagonal Modular).
 
+📘 **[Lee la Documentación Técnica Detallada](./DOCUMENTATION.md)** para entender la arquitectura y el stack AI gratuito.
+
 ## Requisitos de entorno
 - Python 3.12
 - Docker y Docker Compose

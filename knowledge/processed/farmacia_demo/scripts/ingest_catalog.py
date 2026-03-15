@@ -22,11 +22,11 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[4]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy import create_engine  # noqa: E402
+from sqlalchemy.orm import sessionmaker, Session  # noqa: E402
 
-from backend.src.app.infrastructure.database.models import ProductModel
-from backend.src.app.infrastructure.database.session import Base
+from backend.src.app.infrastructure.database.models import ProductModel  # noqa: E402
+from backend.src.app.infrastructure.database.session import Base  # noqa: E402
 
 # Default config path is the domain_config.json sitting next to this script
 DEFAULT_CONFIG = Path(__file__).resolve().parent.parent / "domain_config.json"

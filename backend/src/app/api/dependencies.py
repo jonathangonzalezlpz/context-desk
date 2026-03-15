@@ -1,3 +1,6 @@
+import json
+from pathlib import Path
+
 from fastapi import Depends
 from sqlalchemy.orm import Session
 from qdrant_client import QdrantClient
@@ -11,9 +14,6 @@ from backend.src.app.platform.orchestrator import ChatOrchestrator
 
 def get_catalog_repository(db: Session = Depends(get_db)) -> CatalogRepository:
     return CatalogRepository(db_session=db)
-
-import json
-from pathlib import Path
 
 def get_guardrail_service() -> GuardrailService:
     # Load configuration dynamically for the specific domain

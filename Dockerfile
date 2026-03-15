@@ -17,6 +17,7 @@ COPY --from=builder /usr/local/lib/python3.12/site-packages/ /usr/local/lib/pyth
 COPY --from=builder /usr/local/bin/ /usr/local/bin/
 
 COPY backend/src /app/backend/src
+COPY knowledge /app/knowledge
 
 # Segurizar contenedor
 RUN useradd -m appuser && chown -R appuser /app
