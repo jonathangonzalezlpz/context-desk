@@ -1,15 +1,57 @@
 # ContextDesk
 
-**Domain-safe chatbot platform for local businesses.** (Ejemplo base: Farmacia)
+**Plataforma de chatbot modular y segura para negocios locales.**
 
-Este chatbot está diseñado para negocios con regulaciones o restricciones fuertes sobre los temas que su IA puede tratar, usando RAG híbrido y Guardrails duros, aislados de los Endpoints (Arquitectura Hexagonal Modular).
+ContextDesk es una solución integral para implementar asistentes virtuales que garantizan la seguridad del dominio (Guardrails) y la privacidad de los datos mediante ejecución local (RAG híbrido).
 
-📘 **[Lee la Documentación Técnica Detallada](./DOCUMENTATION.md)** para entender la arquitectura y el stack AI gratuito.
+**Este chatbot está diseñado para negocios con regulaciones o restricciones fuertes sobre los temas que su IA puede tratar, usando RAG híbrido y Guardrails duros, aislados de los Endpoints (Arquitectura Hexagonal Modular).**
+
+📘 **[Lee la Documentación Técnica Detallada](./DOCUMENTATION.md)** para profundizar en el stack y configuración avanzada.
+
+---
+
+## 🏛️ Arquitectura y Decisiones Técnicas
+
+El proyecto sigue una **Arquitectura Hexagonal (Puertos y Adaptadores)**, lo que permite que el núcleo lógico (el dominio) sea totalmente independiente de las herramientas externas (DB, Vector Store, LLMs).
+
+### ¿Por qué estas tecnologías?
+
+*   **FastAPI**: Elegido por su altísimo rendimiento y soporte nativo para `streaming`. Permite una construcción rápida de APIs en Python con validación automática y documentación interactiva.
+*   **Ollama (Local-Infra)**: Proporciona una alternativa local a servicios como OpenAI. Garantiza **coste 0**, privacidad total y permite que el chatbot sea funcional incluso sin conexión a internet o APIs externas.
+*   **Arquitectura Multi-Dominio**: El sistema es agnóstico al negocio. Toda la "inteligencia" y "restricciones" se inyectan mediante configuración, permitiendo escalar de una farmacia a una inmobiliaria en minutos.
+*   **RAG (Retrieval Augmented Generation)**: Combina un catálogo estructurado (SQL) con una base de conocimiento (Vectorial) para dar respuestas precisas y verificables.
+
+---
+
+## 🏗️ Estructura de Componentes
+
+### 1. `backend/` (El Núcleo)
+Gestiona el ciclo de vida completo de la petición:
+*   **Filtros y Guards**: Interceptores de entrada/salida que aseguran que el bot no se salga del tema permitido.
+*   **Orquestación**: Coordina la búsqueda en el catálogo, la recuperación semántica (RAG) y la llamada al modelo de lenguaje.
+*   **Persistencia**: Gestión de memoria de sesión en PostgreSQL.
+
+### 2. `local-infra/` (IA Local)
+Basado en **Ollama**, este componente actúa como el cerebro del sistema. Incluye una imagen Docker personalizada que descarga y configura automáticamente los modelos (Llama 3, Mistral) al arrancar.
+
+### 3. `knowledge/` (Datos del Dominio)
+*   `raw/`: Información en bruto del negocio (CSV de catálogo, MD de políticas).
+*   `processed/`: Scripts de ingesta y archivos `domain_config.json` que definen la personalidad y reglas de cada caso de uso.
+
+### 4. `frontend/` (Interfaz Web)
+Una web de interacción premium diseñada con Vanilla JS/CSS. Enfocada en la simplicidad y la velocidad, procesando respuestas en streaming para una experiencia de usuario fluida.
+
+### 5. `docker/` (Automatización)
+Archivos de contenerización y scripts de acción:
+*   `run.sh / run.ps1`: Orquestación de contenedores y auto-ingesta de datos.
+*   `down.sh`: Limpieza de entorno.
+
+---
 
 ## Requisitos de entorno
 - Python 3.12
 - Docker y Docker Compose
-- `uv` instalado (`curl -LsSf https://astral.sh/uv/install.sh | sh` o usando `pip install uv`)
+- GPU NVIDIA (Opcional, pero recomendada para Ollama)
 
 ## Inicialización y Uso
 
@@ -18,35 +60,23 @@ Para levantar el sistema con auto-ingesta de datos:
 
 **En Linux/macOS:**
 ```bash
-# Modo por defecto (Farmacia + Mock)
-bash docker/actions/run.sh
-
-# Ejemplo con dominio y proveedor específico
-bash docker/actions/run.sh --domain farmacia_demo --provider groq
-bash docker/actions/run.sh --domain farmacia_demo --provider ollama
+bash docker/actions/run.sh --provider ollama
 ```
 
 **En Windows (PowerShell):**
 ```powershell
-# Modo por defecto (Farmacia + Mock)
-.\docker\actions\run.ps1
-
-# Ejemplo con dominio y proveedor específico
-.\docker\actions\run.ps1 -domain farmacia_demo -provider groq
-.\docker\actions\run.ps1 -domain farmacia_demo -provider ollama
+.\docker\actions\run.ps1 -provider ollama
 ```
 
-
-### 🛑 Parar el sistema
+### 🛑 Parar el sistema (Windows/Linux)
+Para detener todos los contenedores y limpiar el entorno:
 ```bash
+# Linux/macOS
 bash docker/actions/down.sh
-```
 
-### 🛠️ Comandos Manuales (Makefile)
-Si prefieres control manual:
-- `make docker-up`: Levanta contenedores.
-- `make dev`: Lanza la API localmente (fuera de Docker).
-- `make ingest-catalog`: Fuerza la ingesta del catálogo.
+# Windows (PowerShell)
+.\docker\actions\down.ps1
+```
 
 ---
 

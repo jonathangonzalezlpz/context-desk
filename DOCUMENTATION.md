@@ -1,5 +1,40 @@
 # Documentación Técnica: ContextDesk
 
+## Arquitectura Multi-Dominio
+
+ContextDesk está diseñado para ser agnóstico al dominio. Toda la lógica de negocio y personalidad del bot se define en archivos de configuración JSON, permitiendo cambiar el comportamiento sin tocar el código Python.
+
+### Configuración del Dominio (`domain_config.json`)
+Cada dominio (ej. `farmacia_demo`) cuenta con un archivo de configuración que define:
+- `system_prompt`: La personalidad y reglas del asistente.
+- `guardrails`: Términos prohibidos y mensajes de bloqueo de seguridad.
+- `relevancy_rules`: Reglas semánticas para evitar que el bot responda fuera de su dominio.
+- `catalog_trigger_keywords`: Palabras clave que activan la búsqueda en el catálogo estructurado.
+
+## Características Principales
+
+### 1. Memoria de Sesión (Persistencia)
+El sistema utiliza PostgreSQL para almacenar el historial de mensajes de cada `session_id`. El `ChatOrchestrator` recupera automáticamente el contexto previo para mantener conversaciones coherentes a lo largo del tiempo.
+
+### 2. Streaming de Respuestas (Rendimiento)
+Para optimizar la experiencia de usuario y aprovechar la aceleración por GPU (NVIDIA RTX 4060 Ti), el backend utiliza `StreamingResponse` de FastAPI. Esto permite que el frontend renderice la respuesta token a token conforme se genera, eliminando la latencia percibida.
+
+- **Hard Guardrails**: Bloqueo instantáneo por regex de términos sensibles definidos en la configuración.
+
+### 4. Robustez y Estabilidad
+- **Migraciones Automáticas**: El backend ejecuta `Base.metadata.create_all` al arrancar, asegurando que tablas como `chat_messages` existan sin intervención manual.
+- **Manejo de Errores en Streaming**: El generador de tokens está protegido con bloques `try-except` para evitar cortes abruptos (`ERR_INCOMPLETE_CHUNKED_ENCODING`) y reportar fallos técnicos de forma controlada.
+
+## Mantenimiento y Logs
+Para monitorear los servicios en tiempo real:
+```bash
+docker compose -p context-desk -f docker/files/docker-compose.yml logs -f
+```
+Para escalar a un nuevo dominio:
+1. Crear carpeta en `knowledge/processed/<nuevo_dominio>/`.
+2. Definir `domain_config.json` siguiendo el esquema de `farmacia_demo`.
+3. Establecer `DOMAIN_ACTIVE=<nuevo_dominio>` en el archivo `.env`.
+
 ## 1. Visión General
 ContextDesk es una plataforma de chatbot diseñada para negocios locales que requieren un control estricto sobre lo que su IA puede y no puede decir (Guardrails). Combina datos estructurados (Catálogo) con datos no estructurados (Base de Conocimiento/RAG).
 
@@ -45,23 +80,17 @@ El sistema es multi-dominio. Para activar un nuevo negocio, solo se requiere sub
 Hemos profesionalizado la gestión de contenedores para facilitar el despliegue y las pruebas:
 
 - **Estructura:** Los archivos de configuración residen en `docker/files/` y los scripts de acción en `docker/actions/`. El motor de IA local reside en `local-infra/ollama/`.
-- **Script `run.sh`:** Automatiza el arranque completo.
+- **Nomenclatura Estandarizada:** Los contenedores se gestionan bajo el proyecto `context-desk`, lo que garantiza identificadores únicos (`context-desk-api-1`, `context-desk-db-1`, etc.) sin importar el directorio de ejecución.
+- **Script `run.sh` / `run.ps1`:** Automatiza el arranque completo.
   - **Auto-Ingesta:** Comprueba el estado de la base de datos y lanza la ingesta si es la primera vez que se inicia.
   - **Configuración:** Permite seleccionar el dominio (`--domain`) y el proveedor de IA (`--provider`).
-- **Script `down.sh`:** Detiene todos los servicios y permite limpiar volúmenes con `--volumes`.
-
-
-## 6. Comportamiento Actual y Pruebas
-El sistema está configurado y verificado con los siguientes comportamientos:
-
-- **Modo Seguro por Defecto:** Si no detecta una clave de Groq o OpenAI, el sistema entra en modo "Mock". No inventará respuestas, sino que mostrará el contexto que ha sido capaz de recuperar.
-- **Guardrails Estrictos:** El bloqueo de temas prohibidos (ej. consejos médicos) sucede *antes* de que la pregunta llegue a la IA, ahorrando recursos y garantizando seguridad.
-- **Prioridad de Datos:** El orquestador prioriza el catálogo estructurado para consultas de stock/precio y usa el RAG para dudas generales/políticas.
+- **GPU Acceleration:** El sistema detecta automáticamente hardware NVIDIA y configura el passthrough para Ollama, permitiendo inferencia local de alto rendimiento.
 
 ## 7. Comprobaciones de Verificación
 Para asegurar que el sistema está operativo, puedes ejecutar:
 1. `curl http://localhost:8000/api/v1/health` -> Debe responder `{"status":"ok"}`.
-2. `docker-compose logs api` -> Para ver qué proveedor de LLM está activo (Groq, OpenAI o Mock).
+2. `docker compose -p context-desk logs api` -> Para ver qué proveedor de LLM está activo y comprobar los logs de CORS.
+3. `docker compose -p context-desk logs ollama` -> Para verificar la detección de la GPU NVIDIA.
 
 ---
 *Este documento refleja el estado actual del desarrollo a fecha del 15 de marzo de 2026.*

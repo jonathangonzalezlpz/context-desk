@@ -49,11 +49,31 @@ async function onSubmit(e) {
       return;
     }
 
-    const data = await res.json();
-    appendBotMessage(data.message, data.is_blocked);
+    // --- Streaming Handle ---
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let botMessageText = "";
+    
+    // Create an empty bot message element that we'll update
+    const botMsgEl = createBotMessageElement("", false);
+    const bodyEl = botMsgEl.querySelector(".message-body");
+    messagesEl.appendChild(botMsgEl);
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      
+      const chunk = decoder.decode(value, { stream: true });
+      botMessageText += chunk;
+      
+      // Update UI in real-time
+      bodyEl.innerHTML = formatText(botMessageText);
+      scrollToBottom();
+    }
 
   } catch (err) {
     removeTypingIndicator(typingId);
+    console.error("Fetch error:", err);
     appendBotMessage(
       "No se pudo conectar con el asistente. Comprueba que el servidor está activo en <code>localhost:8000</code>.",
       false
@@ -85,6 +105,12 @@ function appendUserMessage(text) {
 }
 
 function appendBotMessage(text, isBlocked) {
+  const el = createBotMessageElement(text, isBlocked);
+  messagesEl.appendChild(el);
+  scrollToBottom();
+}
+
+function createBotMessageElement(text, isBlocked) {
   const el = document.createElement("div");
   el.className = "message message--bot" + (isBlocked ? " message--blocked" : "");
 
@@ -110,8 +136,7 @@ function appendBotMessage(text, isBlocked) {
       ${formatText(text)}
     </div>
   `;
-  messagesEl.appendChild(el);
-  scrollToBottom();
+  return el;
 }
 
 function appendTypingIndicator() {

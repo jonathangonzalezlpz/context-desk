@@ -36,6 +36,14 @@ def get_guardrail_service() -> GuardrailService:
         blocked_response=blocked_response
     )
 
+def get_domain_config() -> dict:
+    domain_active = os.getenv("DOMAIN_ACTIVE", "farmacia_demo")
+    config_path = Path(f"knowledge/processed/{domain_active}/domain_config.json")
+    if config_path.exists():
+        with open(config_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return {}
+
 def get_rag_service(qdrant_client: QdrantClient = Depends(get_qdrant_client)) -> RagService:
     return RagService(client=qdrant_client)
 
@@ -44,8 +52,16 @@ def get_chat_orchestrator(
     rag_service: RagService = Depends(get_rag_service),
     catalog_repository: CatalogRepository = Depends(get_catalog_repository)
 ) -> ChatOrchestrator:
+    config = get_domain_config()
+    guardrails_conf = config.get("guardrails", {})
+    
+    relevancy_rules = guardrails_conf.get("relevancy_rules", {})
+    relevancy_rules["catalog_trigger_keywords"] = config.get("catalog", {}).get("catalog_trigger_keywords", [])
+    
     return ChatOrchestrator(
         guardrail_service=guardrail_service,
         rag_service=rag_service,
-        catalog_repository=catalog_repository
+        catalog_repository=catalog_repository,
+        system_prompt=guardrails_conf.get("system_prompt", "Eres un asistente virtual."),
+        relevancy_config=relevancy_rules
     )

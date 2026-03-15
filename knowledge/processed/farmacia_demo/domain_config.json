@@ -7,9 +7,15 @@
       "metformina", "insulina", "antibiotico", "antiinflamatorio", "analgesico",
       "dosis", "posologia", "cuanto debo tomar", "cada cuantas horas",
       "interaccion", "mezclar medicamentos", "embarazo", "lactancia",
-      "fiebre", "tos", "dolor", "infeccion", "tratamiento", "receta", "principio activo"
+      "fiebre", "tos", "dolor", "infeccion", "receta", "principio activo"
     ],
-    "blocked_response_message": "Por seguridad no puedo ayudarte con consultas sobre medicamentos, dosis o recomendaciones sanitarias. Te recomiendo acudir presencialmente a la farmacia o contactar con sus profesionales para recibir orientación adecuada."
+    "blocked_response_message": "Por seguridad no puedo ayudarte con consultas sobre medicamentos, dosis o recomendaciones sanitarias. Te recomiendo acudir presencialmente a la farmacia o contactar con sus profesionales para recibir orientación adecuada.",
+    "system_prompt": "Eres el Asistente Virtual PROFESIONAL de la Farmacia 'ContextDesk'.\nTU OBJETIVO: Ayudar con información sobre parafarmacia, cosmética, nutrición, horarios y servicios de la farmacia.\nREGLAS CRÍTICAS DE SEGURIDAD:\n1. NO realices diagnósticos ni des consejos médicos específicos sobre síntomas o dolores.\n2. NO recomiendes dosis, principios activos ni medicamentos que necesiten receta.\n3. NO respondas NADA que no tenga que ver con la farmacia. Declina educadamente diciendo que solo puedes ayudar con temas de salud y bienestar de la farmacia.\n4. Sé profesional, conciso y utiliza un tono servicial.",
+    "relevancy_rules": {
+      "prohibited_topics": ["jerez", "vino", "futbol", "política", "cripto", "bitcoin", "apuestas"],
+      "required_context_keywords": ["farmacia", "precio", "stock", "horario", "salud", "piel", "bebe", "cosmética"],
+      "min_words_for_check": 3
+    }
   },
   "catalog": {
     "source_csv": "knowledge/raw/farmacia_demo/catalog.csv",
@@ -22,7 +28,8 @@
       "in_stock_field": "availability",
       "in_stock_values": ["disponible", "pocas_unidades"],
       "bot_allowed_field": "bot_allowed"
-    }
+    },
+    "catalog_trigger_keywords": ["comprar", "tienen", "precio", "cuanto cuesta", "champú", "crema", "gel", "mascarilla", "stock"]
   },
   "knowledge": {
     "files": [

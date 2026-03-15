@@ -1,7 +1,7 @@
 FROM ollama/ollama:latest
 
 # Copiar el script de inicialización
-COPY entrypoint.sh /entrypoint.sh
+COPY local-infra/ollama/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 # Exponer el puerto por defecto
