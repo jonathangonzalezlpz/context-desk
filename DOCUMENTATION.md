@@ -24,8 +24,9 @@ Para eliminar costes de desarrollo y facilitar la presentación en portfolio, Co
 - **Embeddings locales (FastEmbed):** No utiliza la API de OpenAI para vectorizar. Los vectores se generan dentro del contenedor Docker usando la CPU, lo que garantiza coste cero y privacidad.
 - **Orquestador Multi-LLM:**
   - **Groq (Llama 3):** Recomendado para portfolio. Es gratuito, ultrarrápido y potente.
+  - **Ollama (Local):** Soporte nativo para modelos locales (llama3, mistral, etc.). El sistema se comunica con tu instancia local de Ollama.
   - **OpenAI:** Soportado como alternativa de pago.
-  - **Modo Mock:** Si no hay API Keys configuradas, el bot responde con el contexto recuperado del sistema, permitiendo validar la lógica de búsqueda sin coste.
+  - **Modo Mock:** Si no hay API Keys configuradas, el bot responde con el contexto recuperado del sistema.
 
 ## 4. Flujo de Procesamiento (RAG + Guardrails)
 

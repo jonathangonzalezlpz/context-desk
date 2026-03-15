@@ -15,13 +15,27 @@ Este chatbot está diseñado para negocios con regulaciones o restricciones fuer
 
 ### 🚀 Lanzamiento Rápido (Recomendado)
 Para levantar el sistema con auto-ingesta de datos:
+
+**En Linux/macOS:**
 ```bash
 # Modo por defecto (Farmacia + Mock)
 bash docker/actions/run.sh
 
 # Ejemplo con dominio y proveedor específico
 bash docker/actions/run.sh --domain farmacia_demo --provider groq
+bash docker/actions/run.sh --domain farmacia_demo --provider ollama
 ```
+
+**En Windows (PowerShell):**
+```powershell
+# Modo por defecto (Farmacia + Mock)
+.\docker\actions\run.ps1
+
+# Ejemplo con dominio y proveedor específico
+.\docker\actions\run.ps1 -domain farmacia_demo -provider groq
+.\docker\actions\run.ps1 -domain farmacia_demo -provider ollama
+```
+
 
 ### 🛑 Parar el sistema
 ```bash

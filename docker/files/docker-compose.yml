@@ -13,7 +13,10 @@ services:
       - QDRANT_URL=http://qdrant:6333
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - GROQ_API_KEY=${GROQ_API_KEY}
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-llama3}
       - DOMAIN_ACTIVE=${DOMAIN_ACTIVE:-farmacia_demo}
+      - PROVIDER_SELECTED=${PROVIDER_SELECTED:-mock}
     depends_on:
       db:
         condition: service_healthy

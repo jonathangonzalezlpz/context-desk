@@ -21,19 +21,35 @@ class ChatOrchestrator:
         self.catalog = catalog_repository
         
         # Determine LLM Provider from env (defaulting to Mock if no keys)
-        api_key = os.environ.get("GROQ_API_KEY") or os.environ.get("OPENAI_API_KEY")
+        provider = os.environ.get("PROVIDER_SELECTED", "").lower()
         
-        if os.environ.get("GROQ_API_KEY"):
+        if provider == "groq" and os.environ.get("GROQ_API_KEY"):
             from langchain_groq import ChatGroq
             self.llm = ChatGroq(temperature=0.0, model_name="llama3-8b-8192")
             print("🤖 Using Groq (Llama 3) as LLM Provider")
-        elif os.environ.get("OPENAI_API_KEY"):
+        elif provider == "openai" and os.environ.get("OPENAI_API_KEY"):
             from langchain_openai import ChatOpenAI
             self.llm = ChatOpenAI(temperature=0.0, model="gpt-4o-mini")
             print("🤖 Using OpenAI as LLM Provider")
+        elif provider == "ollama":
+            from langchain_ollama import ChatOllama
+            base_url = os.environ.get("OLLAMA_BASE_URL", "http://host.docker.internal:11434")
+            model = os.environ.get("OLLAMA_MODEL", "llama3")
+            self.llm = ChatOllama(base_url=base_url, model=model, temperature=0.0)
+            print(f"🤖 Using Ollama ({model}) as LLM Provider at {base_url}")
         else:
-            self.llm = None
-            print("⚠️  No LLM API Key found. Chat will run in 'Mock' mode.")
+            # Auto-detection if no specific provider is forced
+            if os.environ.get("GROQ_API_KEY"):
+                from langchain_groq import ChatGroq
+                self.llm = ChatGroq(temperature=0.0, model_name="llama3-8b-8192")
+                print("🤖 Auto-detected: Using Groq")
+            elif os.environ.get("OPENAI_API_KEY"):
+                from langchain_openai import ChatOpenAI
+                self.llm = ChatOpenAI(temperature=0.0, model="gpt-4o-mini")
+                print("🤖 Auto-detected: Using OpenAI")
+            else:
+                self.llm = None
+                print("⚠️  No LLM API Key or Provider found. Chat will run in 'Mock' mode.")
 
     def process_message(self, session_id: str, user_message: str) -> ChatResponse:
         # 1. Hard Guardrail Check

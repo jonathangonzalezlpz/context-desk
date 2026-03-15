@@ -18,14 +18,16 @@ echo "🚀 Starting ContextDesk..."
 echo "📍 Domain: $DOMAIN"
 echo "🤖 Provider: $PROVIDER"
 
-# Export variables for docker-compose
-export DOMAIN_ACTIVE=$DOMAIN
-export PROVIDER_SELECTED=$PROVIDER
-
 # Load .env if exists
 if [ -f .env ]; then
     export $(grep -v '^#' .env | xargs)
 fi
+
+# Export variables for docker-compose
+export DOMAIN_ACTIVE=$DOMAIN
+export PROVIDER_SELECTED=$PROVIDER
+export OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+export OLLAMA_MODEL=${OLLAMA_MODEL:-llama3}
 
 # Select Docker Compose file
 COMPOSE_FILE="docker/files/docker-compose.yml"
