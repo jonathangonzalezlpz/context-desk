@@ -40,6 +40,16 @@ Para eliminar costes de desarrollo y facilitar la presentación en portfolio, Co
 ## 5. Ingesta de Datos
 El sistema es multi-dominio. Para activar un nuevo negocio, solo se requiere subir sus archivos `raw` y configurar el `domain_config.json`. Los scripts de ingesta automatizan el volcado a la DB y la base vectorial.
 
+## 6. Orquestación y Automatización con Docker
+Hemos profesionalizado la gestión de contenedores para facilitar el despliegue y las pruebas:
+
+- **Estructura:** Los archivos de configuración residen en `docker/files/` y los scripts de acción en `docker/actions/`.
+- **Script `run.sh`:** Automatiza el arranque completo.
+  - **Auto-Ingesta:** Comprueba el estado de la base de datos y lanza la ingesta si es la primera vez que se inicia.
+  - **Configuración:** Permite seleccionar el dominio (`--domain`) y el proveedor de IA (`--provider`).
+- **Script `down.sh`:** Detiene todos los servicios y permite limpiar volúmenes con `--volumes`.
+
+
 ## 6. Comportamiento Actual y Pruebas
 El sistema está configurado y verificado con los siguientes comportamientos:
 

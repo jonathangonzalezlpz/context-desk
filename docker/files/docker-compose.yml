@@ -1,0 +1,48 @@
+services:
+  api:
+    build:
+      context: ../../
+      dockerfile: docker/files/Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../../backend/src:/app/backend/src
+      - ../../knowledge:/app/knowledge
+    environment:
+      - DATABASE_URL=postgresql://user:password@db:5432/contextdesk_db
+      - QDRANT_URL=http://qdrant:6333
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - DOMAIN_ACTIVE=${DOMAIN_ACTIVE:-farmacia_demo}
+    depends_on:
+      db:
+        condition: service_healthy
+      qdrant:
+        condition: service_started
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: contextdesk_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d contextdesk_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  qdrant:
+      image: qdrant/qdrant:latest
+      ports:
+        - "6333:6333"
+      volumes:
+        - qdrant_data:/qdrant/storage
+
+volumes:
+  pgdata:
+  qdrant_data:

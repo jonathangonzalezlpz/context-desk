@@ -11,11 +11,28 @@ Este chatbot está diseñado para negocios con regulaciones o restricciones fuer
 - Docker y Docker Compose
 - `uv` instalado (`curl -LsSf https://astral.sh/uv/install.sh | sh` o usando `pip install uv`)
 
-## Inicialización local
-1. Copiar `.env.example` a `.env`
-2. Correr `make setup`
-3. Correr `make docker-up` para levantar BD y dependencias
-4. Correr `make dev` para usar la API en modo local con reload.
+## Inicialización y Uso
+
+### 🚀 Lanzamiento Rápido (Recomendado)
+Para levantar el sistema con auto-ingesta de datos:
+```bash
+# Modo por defecto (Farmacia + Mock)
+bash docker/actions/run.sh
+
+# Ejemplo con dominio y proveedor específico
+bash docker/actions/run.sh --domain farmacia_demo --provider groq
+```
+
+### 🛑 Parar el sistema
+```bash
+bash docker/actions/down.sh
+```
+
+### 🛠️ Comandos Manuales (Makefile)
+Si prefieres control manual:
+- `make docker-up`: Levanta contenedores.
+- `make dev`: Lanza la API localmente (fuera de Docker).
+- `make ingest-catalog`: Fuerza la ingesta del catálogo.
 
 ---
 

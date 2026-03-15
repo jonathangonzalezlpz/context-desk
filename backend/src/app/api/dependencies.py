@@ -1,3 +1,4 @@
+import os
 import json
 from pathlib import Path
 
@@ -17,8 +18,8 @@ def get_catalog_repository(db: Session = Depends(get_db)) -> CatalogRepository:
 
 def get_guardrail_service() -> GuardrailService:
     # Load configuration dynamically for the specific domain
-    # In production, this might come from a DB or Redis per-tenant/per-business
-    config_path = Path("knowledge/processed/farmacia_demo/domain_config.json")
+    domain_active = os.getenv("DOMAIN_ACTIVE", "farmacia_demo")
+    config_path = Path(f"knowledge/processed/{domain_active}/domain_config.json")
     
     blocked_terms = []
     blocked_response = "Estoy programado para no responder a este tipo de consultas por seguridad."
