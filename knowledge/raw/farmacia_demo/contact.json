@@ -1,0 +1,19 @@
+{
+  "phone": "+34 910 123 456",
+  "whatsapp": "+34 610 234 567",
+  "email": "hola@farmaciapuertadegoya-demo.es",
+  "website": "https://farmaciapuertadegoya-demo.es",
+  "address": {
+    "street": "Calle de Alcalá, 118",
+    "postal_code": "28009",
+    "city": "Madrid",
+    "region": "Comunidad de Madrid",
+    "country": "España"
+  },
+  "metro_nearby": [
+    "Goya",
+    "Príncipe de Vergara"
+  ],
+  "pickup_available": true,
+  "phone_attention": "Lunes a sábado en horario comercial"
+}

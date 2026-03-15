@@ -1,0 +1,30 @@
+{
+  "business_name": "Farmacia Puerta de Goya",
+  "legal_name": "Farmacia Puerta de Goya Demo S.L.",
+  "tagline": "Cuidado diario, dermocosmética y parafarmacia en Madrid.",
+  "city": "Madrid",
+  "district": "Salamanca",
+  "country": "España",
+  "demo_notice": "Datos sintéticos creados con fines demostrativos para un proyecto de portfolio. No representan una farmacia real.",
+  "supported_topics": [
+    "horario",
+    "contacto",
+    "direccion",
+    "servicios",
+    "productos de parafarmacia",
+    "marcas",
+    "reservas basicas",
+    "politicas del negocio"
+  ],
+  "blocked_topics": [
+    "medicamentos",
+    "dosis",
+    "posologia",
+    "interacciones",
+    "sintomas",
+    "patologias",
+    "compatibilidades",
+    "embarazo y lactancia relacionados con medicamentos"
+  ],
+  "human_handoff_message": "Por seguridad, para consultas sobre medicamentos o recomendaciones sanitarias debes acudir presencialmente a la farmacia o contactar con sus profesionales."
+}

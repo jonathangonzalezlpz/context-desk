@@ -1,0 +1,2 @@
+class ContextDeskException(Exception):
+    pass

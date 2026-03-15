@@ -1,0 +1,14 @@
+{
+  "domain_id": "farmacia_demo",
+  "guardrails": {
+    "blocked_terms": [
+      "paracetamol", "ibuprofeno", "amoxicilina", "amoxicilina-clavulanico",
+      "omeprazol", "lorazepam", "diazepam", "enalapril", "atorvastatina",
+      "metformina", "insulina", "antibiotico", "antiinflamatorio", "analgesico",
+      "dosis", "posologia", "cuanto debo tomar", "cada cuantas horas",
+      "interaccion", "mezclar medicamentos", "embarazo", "lactancia",
+      "fiebre", "tos", "dolor", "infeccion", "tratamiento", "receta", "principio activo"
+    ],
+    "blocked_response_message": "Por seguridad no puedo ayudarte con consultas sobre medicamentos, dosis o recomendaciones sanitarias. Te recomiendo acudir presencialmente a la farmacia o contactar con sus profesionales para recibir orientación adecuada."
+  }
+}

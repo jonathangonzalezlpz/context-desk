@@ -1,0 +1,65 @@
+id,name,brand,category,subcategory,description,format,target,price_eur,availability,stock_estimate,tags,bot_allowed
+P001,Crema facial hidratante piel sensible,DermaLuz,dermocosmetica,cuidado facial,Crema hidratante de uso diario para piel sensible.,50 ml,adulto,18.95,disponible,12,piel sensible;hidratacion;facial,true
+P002,Gel limpiador suave,DermaLuz,dermocosmetica,limpieza facial,Gel limpiador sin jabón para limpieza diaria.,200 ml,adulto,13.50,disponible,9,limpieza;suave;facial,true
+P003,Sérum antioxidante vitamina C,DermaLuz,dermocosmetica,serum facial,Sérum facial iluminador de textura ligera.,30 ml,adulto,24.90,pocas_unidades,3,vitamina c;antioxidante;luminosidad,true
+P004,Protector solar facial SPF50+,Solara,solar,facial,Fotoprotección facial de acabado ligero.,50 ml,adulto,19.80,disponible,15,solar;spf50;facial,true
+P005,Protector solar infantil SPF50+,Solara Kids,solar,infantil,Fotoprotección infantil resistente al agua.,200 ml,infantil,22.50,disponible,11,solar;infantil;spf50,true
+P006,After sun calmante,Solara,solar,corporal,Loción calmante para después de la exposición solar.,250 ml,adulto,12.90,disponible,7,after sun;corporal;verano,true
+P007,Champú suave uso frecuente,CapilCare,capilar,champu,Champú de uso frecuente con limpieza suave.,400 ml,adulto,9.95,disponible,14,champu;suave;uso frecuente,true
+P008,Champú cuero cabelludo sensible,CapilCare,capilar,champu,Champú suave para cuero cabelludo sensible.,300 ml,adulto,11.40,pocas_unidades,4,capilar;sensible;champu,true
+P009,Acondicionador hidratante,CapilCare,capilar,acondicionador,Acondicionador para cabello seco o apagado.,250 ml,adulto,8.90,disponible,10,hidratacion;capilar;acondicionador,true
+P010,Pasta dentífrica encías sensibles,BocaClara,higiene bucal,dentifrico,Dentífrico de uso diario para encías sensibles.,75 ml,adulto,6.80,disponible,20,encias sensibles;higiene bucal,true
+P011,Colutorio sin alcohol,BocaClara,higiene bucal,colutorio,Colutorio de uso diario sin alcohol.,500 ml,adulto,7.60,disponible,13,sin alcohol;colutorio,true
+P012,Cepillo dental suave,BocaClara,higiene bucal,cepillos,Cepillo con filamentos suaves.,1 ud,adulto,3.90,disponible,25,cepillo;suave,true
+P013,Gel de baño piel atópica,Dermia,higiene corporal,gel de baño,Gel de baño suave para piel seca y sensible.,750 ml,familiar,14.20,disponible,8,piel atopica;sensible;baño,true
+P014,Loción corporal nutritiva,Dermia,cuidado corporal,hidratacion,Loción corporal nutritiva de absorción rápida.,400 ml,adulto,12.40,disponible,9,corporal;hidratacion,true
+P015,Crema de manos reparadora,Dermia,cuidado corporal,manos,Crema de manos para uso frecuente.,75 ml,adulto,5.95,disponible,16,manos;reparadora,true
+P016,Agua micelar,PureSkin,dermocosmetica,limpieza facial,Agua micelar para desmaquillado y limpieza.,400 ml,adulto,10.50,disponible,12,micelar;limpieza,true
+P017,Contorno de ojos hidratante,PureSkin,dermocosmetica,cuidado facial,Contorno de ojos de textura ligera.,15 ml,adulto,17.30,pocas_unidades,2,ojos;hidratacion,true
+P018,Crema nutritiva de noche,PureSkin,dermocosmetica,cuidado facial,Crema de noche para cuidado facial intensivo.,50 ml,adulto,21.10,disponible,6,noche;facial;nutritiva,true
+P019,Toallitas infantiles suaves,MiniCare,bebe,higiene infantil,Toallitas suaves para higiene diaria.,72 ud,bebe,4.20,disponible,18,bebe;toallitas;higiene,true
+P020,Crema del pañal,MiniCare,bebe,cuidado infantil,Crema barrera para la zona del pañal.,100 ml,bebe,8.75,disponible,10,bebe;pañal;crema,true
+P021,Gel-champú bebé,MiniCare,bebe,baño infantil,Gel y champú suave para bebé.,500 ml,bebe,9.40,disponible,8,bebe;baño;champu,true
+P022,Leche corporal infantil,MiniCare,bebe,hidratacion infantil,Leche corporal hidratante para piel infantil.,400 ml,infantil,10.90,pocas_unidades,3,infantil;hidratacion,true
+P023,Bruma facial refrescante,AquaZen,dermocosmetica,cuidado facial,Bruma facial ligera para refrescar la piel.,150 ml,adulto,8.30,disponible,11,bruma;refrescante,true
+P024,Mascarilla facial hidratante,AquaZen,dermocosmetica,mascarillas,Mascarilla de hidratación intensiva.,1 ud,adulto,4.90,disponible,21,mascarilla;hidratacion,true
+P025,Gel íntimo suave,CareIntim,higiene intima,higiene,Gel de higiene íntima de uso diario.,250 ml,adulto,8.80,disponible,7,intima;suave,true
+P026,Compresas postparto algodón,CareIntim,higiene intima,compresas,Compresas de algodón de alta absorción.,10 ud,adulto,6.70,temporalmente_agotado,0,algodon;absorcion,true
+P027,Lubricante base acuosa,CareIntim,salud sexual,lubricantes,Lubricante de base acuosa.,100 ml,adulto,9.90,disponible,5,base acuosa;lubricante,true
+P028,Nebulizador nasal infantil,RespiraPlus,bienestar,dispositivos,Nebulizador nasal de uso higiénico.,1 ud,infantil,16.50,disponible,4,nasal;dispositivo,true
+P029,Termómetro digital,RespiraPlus,bienestar,dispositivos,Termómetro digital de lectura rápida.,1 ud,familiar,12.90,disponible,6,termometro;digital,true
+P030,Tiras nasales noche,RespiraPlus,bienestar,descanso,Tiras adhesivas para confort nocturno.,10 ud,adulto,7.20,disponible,9,descanso;nasal,true
+P031,Gel hidroalcohólico manos,HigieLab,higiene,manos,Gel higienizante de manos.,250 ml,familiar,3.95,disponible,30,manos;gel,true
+P032,Mascarillas higiénicas adultas,HigieLab,higiene,proteccion,Mascarillas higiénicas de un solo uso.,10 ud,adulto,5.50,disponible,22,mascarillas;proteccion,true
+P033,Bastoncillos de algodón,HigieLab,higiene,algodon,Bastoncillos de algodón para higiene general.,200 ud,familiar,2.80,disponible,19,algodon;bastoncillos,true
+P034,Discos desmaquillantes,HigieLab,higiene,algodon,Discos de algodón para higiene y limpieza facial.,80 ud,adulto,2.95,disponible,17,algodon;facial,true
+P035,Crema pies secos,PodoSoft,cuidado corporal,pies,Crema para el cuidado diario de pies secos.,100 ml,adulto,7.90,disponible,8,pies;hidratacion,true
+P036,Spray pies frescos,PodoSoft,cuidado corporal,pies,Spray refrescante para pies.,150 ml,adulto,6.60,disponible,7,pies;spray,true
+P037,Plantillas confort diarias,PodoSoft,ortopedia ligera,plantillas,Plantillas de confort para uso diario.,1 par,adulto,14.90,pocas_unidades,2,plantillas;confort,true
+P038,Muñequera elástica,MoveCare,ortopedia ligera,soportes,Muñequera elástica ajustable.,1 ud,adulto,11.95,disponible,6,muñequera;soporte,true
+P039,Rodillera básica,MoveCare,ortopedia ligera,soportes,Rodillera básica para sujeción ligera.,1 ud,adulto,15.40,disponible,5,rodillera;soporte,true
+P040,Banda frío-calor reutilizable,MoveCare,bienestar,accesorios,Banda reutilizable frío-calor.,1 ud,familiar,8.50,disponible,9,frio calor;reutilizable,true
+P041,Protector labial SPF30,Solara,solar,labial,Protector labial con fotoprotección.,4 g,adulto,5.70,disponible,14,labial;spf30,true
+P042,Spray solar transparente SPF50,Solara,solar,corporal,Spray solar corporal transparente.,200 ml,adulto,23.20,disponible,6,spray solar;spf50,true
+P043,Leche solar familiar SPF30,Solara Family,solar,corporal,Leche solar corporal de uso familiar.,250 ml,familiar,18.60,disponible,10,familiar;solar;spf30,true
+P044,Desodorante roll-on suave,Dermia,higiene corporal,desodorante,Desodorante roll-on de uso diario.,50 ml,adulto,5.40,disponible,13,desodorante;suave,true
+P045,Aceite de ducha,Dermia,higiene corporal,ducha,Aceite de ducha para piel seca.,500 ml,adulto,13.90,disponible,7,ducha;piel seca,true
+P046,Espuma limpiadora facial,PureSkin,dermocosmetica,limpieza facial,Espuma facial de limpieza suave.,150 ml,adulto,11.80,disponible,9,espuma;limpieza,true
+P047,Crema matificante facial,PureSkin,dermocosmetica,cuidado facial,Crema facial de acabado mate.,40 ml,adulto,16.90,disponible,5,mate;facial,true
+P048,Sérum ácido hialurónico,PureSkin,dermocosmetica,serum facial,Sérum hidratante de textura ligera.,30 ml,adulto,22.40,disponible,8,hialuronico;serum,true
+P049,Cepillo interdental mix,BocaClara,higiene bucal,cepillos,Set de cepillos interdentales surtidos.,6 ud,adulto,5.90,disponible,12,interdental;higiene bucal,true
+P050,Hilo dental encerado,BocaClara,higiene bucal,hilo dental,Hilo dental encerado de uso diario.,50 m,adulto,3.80,disponible,20,hilo dental,true
+P051,Protector pezón lactancia,MiniCare,bebe,accesorios maternidad,Protector de uso externo para lactancia.,2 ud,adulto,9.50,pocas_unidades,2,lactancia;accesorio,true
+P052,Bolsa térmica infantil estampada,MiniCare,bebe,accesorios,Bolsa térmica con funda infantil.,1 ud,infantil,7.70,disponible,6,termica;infantil,true
+P053,Agua termal spray,AquaZen,dermocosmetica,cuidado facial,Spray de agua termal refrescante.,300 ml,adulto,9.90,disponible,11,agua termal;refrescante,true
+P054,Gel de aloe corporal,AquaZen,cuidado corporal,calmante,Gel corporal fresco con aloe.,250 ml,adulto,8.60,disponible,10,aloe;corporal,true
+P055,Neceser viaje higiene,HigieLab,higiene,kits,Kit básico de higiene en formato viaje.,1 ud,adulto,12.10,disponible,4,viaje;kit,true
+P056,Toallitas desinfectantes superficies,HigieLab,higiene,limpieza,Toallitas para limpieza de superficies.,40 ud,familiar,4.95,disponible,14,desinfeccion;superficies,true
+P057,Protector diario algodón,CareIntim,higiene intima,protectores,Protectores diarios de algodón.,24 ud,adulto,4.30,disponible,13,algodon;diario,true
+P058,Bálsamo reparador nariz y labios,RespiraPlus,bienestar,cuidado externo,Bálsamo reparador de uso externo.,15 ml,familiar,6.20,disponible,8,balsamo;externo,true
+P059,Rodillo masaje facial,AquaZen,bienestar,accesorios,Rodillo facial para rutina cosmética.,1 ud,adulto,13.40,pocas_unidades,2,facial;accesorio,true
+P060,Esponja maquillaje suave,PureSkin,dermocosmetica,accesorios,Esponja cosmética de textura suave.,1 ud,adulto,5.10,disponible,18,maquillaje;accesorio,true
+P061,Crema corporal reafirmante,DermaLuz,cuidado corporal,hidratacion,Crema corporal de uso diario.,250 ml,adulto,15.60,disponible,7,reafirmante;corporal,true
+P062,Pack viaje solar mini,Solara,solar,kits,Pack mini de fotoprotección para viaje.,1 pack,adulto,14.20,disponible,5,solar;viaje;pack,true
+P063,Gel limpiador manos sin perfume,HigieLab,higiene,manos,Gel limpiador de manos sin perfume.,300 ml,familiar,4.60,disponible,16,sin perfume;manos,true
+P064,Toalla microfibra secado rápido,MoveCare,bienestar,accesorios,Toalla ligera de secado rápido.,1 ud,familiar,11.20,disponible,9,microfibra;viaje,true

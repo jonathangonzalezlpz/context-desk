@@ -1,0 +1,47 @@
+{
+  "timezone": "Europe/Madrid",
+  "weekly_schedule": {
+    "monday": [
+      {
+        "open": "09:00",
+        "close": "21:00"
+      }
+    ],
+    "tuesday": [
+      {
+        "open": "09:00",
+        "close": "21:00"
+      }
+    ],
+    "wednesday": [
+      {
+        "open": "09:00",
+        "close": "21:00"
+      }
+    ],
+    "thursday": [
+      {
+        "open": "09:00",
+        "close": "21:00"
+      }
+    ],
+    "friday": [
+      {
+        "open": "09:00",
+        "close": "21:00"
+      }
+    ],
+    "saturday": [
+      {
+        "open": "10:00",
+        "close": "14:30"
+      }
+    ],
+    "sunday": []
+  },
+  "special_notes": [
+    "Los domingos la farmacia permanece cerrada.",
+    "El horario puede variar en festivos locales o nacionales.",
+    "Se recomienda confirmar por teléfono en fechas señaladas."
+  ]
+}

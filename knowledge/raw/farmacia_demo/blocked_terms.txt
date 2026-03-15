@@ -1,0 +1,29 @@
+paracetamol
+ibuprofeno
+amoxicilina
+amoxicilina-clavulanico
+omeprazol
+lorazepam
+diazepam
+enalapril
+atorvastatina
+metformina
+insulina
+antibiotico
+antiinflamatorio
+analgesico
+dosis
+posologia
+cuanto debo tomar
+cada cuantas horas
+interaccion
+mezclar medicamentos
+embarazo
+lactancia
+fiebre
+tos
+dolor
+infeccion
+tratamiento
+receta
+principio activo
