@@ -32,8 +32,8 @@ export OLLAMA_MODEL=${OLLAMA_MODEL:-llama3}
 # Select Docker Compose file
 COMPOSE_FILE="docker/files/docker-compose.yml"
 
-# 1. Start Database and Vector Store
-docker-compose -f $COMPOSE_FILE up -d db qdrant
+# 1. Start Database, Vector Store and Ollama
+docker-compose -f $COMPOSE_FILE up -d db qdrant ollama
 
 echo "⏳ Waiting for database to be healthy..."
 until [ "$(docker inspect -f {{.State.Health.Status}} context-desk-db-1)" == "healthy" ]; do

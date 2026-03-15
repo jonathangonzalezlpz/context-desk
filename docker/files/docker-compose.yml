@@ -13,7 +13,7 @@ services:
       - QDRANT_URL=http://qdrant:6333
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - GROQ_API_KEY=${GROQ_API_KEY}
-      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      - OLLAMA_BASE_URL=http://ollama:11434
       - OLLAMA_MODEL=${OLLAMA_MODEL:-llama3}
       - DOMAIN_ACTIVE=${DOMAIN_ACTIVE:-farmacia_demo}
       - PROVIDER_SELECTED=${PROVIDER_SELECTED:-mock}
@@ -21,6 +21,8 @@ services:
       db:
         condition: service_healthy
       qdrant:
+        condition: service_started
+      ollama:
         condition: service_started
 
   db:
@@ -46,6 +48,21 @@ services:
       volumes:
         - qdrant_data:/qdrant/storage
 
+  ollama:
+    build:
+      context: ../../
+      dockerfile: local-infra/ollama/Dockerfile
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-llama3}
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:11434/api/tags || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 volumes:
   pgdata:
   qdrant_data:
+  ollama_data:

@@ -44,7 +44,7 @@ El sistema es multi-dominio. Para activar un nuevo negocio, solo se requiere sub
 ## 6. Orquestación y Automatización con Docker
 Hemos profesionalizado la gestión de contenedores para facilitar el despliegue y las pruebas:
 
-- **Estructura:** Los archivos de configuración residen en `docker/files/` y los scripts de acción en `docker/actions/`.
+- **Estructura:** Los archivos de configuración residen en `docker/files/` y los scripts de acción en `docker/actions/`. El motor de IA local reside en `local-infra/ollama/`.
 - **Script `run.sh`:** Automatiza el arranque completo.
   - **Auto-Ingesta:** Comprueba el estado de la base de datos y lanza la ingesta si es la primera vez que se inicia.
   - **Configuración:** Permite seleccionar el dominio (`--domain`) y el proveedor de IA (`--provider`).
