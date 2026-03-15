@@ -1,4 +1,4 @@
-.PHONY: setup dev lint test docker-up docker-down
+.PHONY: setup dev lint test docker-up docker-down ingest-catalog ingest-knowledge
 
 setup:
 	uv pip install -e ".[dev]"
@@ -20,3 +20,9 @@ docker-up:
 
 docker-down:
 	docker-compose down
+
+ingest-catalog:
+	python knowledge/processed/farmacia_demo/scripts/ingest_catalog.py
+
+ingest-knowledge:
+	python knowledge/processed/farmacia_demo/scripts/ingest_knowledge.py

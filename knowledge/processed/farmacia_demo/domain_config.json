@@ -10,5 +10,28 @@
       "fiebre", "tos", "dolor", "infeccion", "tratamiento", "receta", "principio activo"
     ],
     "blocked_response_message": "Por seguridad no puedo ayudarte con consultas sobre medicamentos, dosis o recomendaciones sanitarias. Te recomiendo acudir presencialmente a la farmacia o contactar con sus profesionales para recibir orientación adecuada."
+  },
+  "catalog": {
+    "source_csv": "knowledge/raw/farmacia_demo/catalog.csv",
+    "column_map": {
+      "name": "name",
+      "category": "category",
+      "brand": "brand",
+      "description": "description",
+      "price_eur": "price_eur",
+      "in_stock_field": "availability",
+      "in_stock_values": ["disponible", "pocas_unidades"],
+      "bot_allowed_field": "bot_allowed"
+    }
+  },
+  "knowledge": {
+    "files": [
+      "knowledge/raw/farmacia_demo/faq.md",
+      "knowledge/raw/farmacia_demo/services.md",
+      "knowledge/raw/farmacia_demo/policies.md",
+      "knowledge/raw/farmacia_demo/guardrails.md"
+    ],
+    "chunk_size": 400,
+    "qdrant_collection": "knowledge_base"
   }
 }

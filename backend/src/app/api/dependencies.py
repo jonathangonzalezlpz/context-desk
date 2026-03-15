@@ -18,7 +18,7 @@ from pathlib import Path
 def get_guardrail_service() -> GuardrailService:
     # Load configuration dynamically for the specific domain
     # In production, this might come from a DB or Redis per-tenant/per-business
-    config_path = Path("knowledge/processed/domain_config.json")
+    config_path = Path("knowledge/processed/farmacia_demo/domain_config.json")
     
     blocked_terms = []
     blocked_response = "Estoy programado para no responder a este tipo de consultas por seguridad."
