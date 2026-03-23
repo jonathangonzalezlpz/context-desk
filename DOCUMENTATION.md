@@ -19,7 +19,17 @@ El sistema utiliza PostgreSQL para almacenar el historial de mensajes de cada `s
 ### 2. Streaming de Respuestas (Rendimiento)
 Para optimizar la experiencia de usuario y aprovechar la aceleración por GPU (NVIDIA RTX 4060 Ti), el backend utiliza `StreamingResponse` de FastAPI. Esto permite que el frontend renderice la respuesta token a token conforme se genera, eliminando la latencia percibida.
 
-- **Hard Guardrails**: Bloqueo instantáneo por regex de términos sensibles definidos en la configuración.
+### 3. Mecanismos de Seguridad y Contención
+
+El sistema implementa múltiples capas de defensa para garantizar que el asistente opere exclusivamente dentro de los límites del negocio:
+
+| Capa | Mecanismo | Vulnerabilidad que soluciona | Cómo lo hace |
+| :--- | :--- | :--- | :--- |
+| **Entrada** | Guardrails Duros (Regex) | Consultas directas sobre medicamentos o dosis. | Intercepta el mensaje antes de llegar al LLM y bloquea términos prohibidos configurados. |
+| **Dominio** | Filtro de Relevancia Semántica | Consultas fuera de dominio o intentos de desvío (Prompt Injection). | Aplica heurísticas y conteo de palabras clave para declinar temas no permitidos (ej. política, alcohol). |
+| **Datos** | RAG e Ingesta Local | Fuga de datos sensibles o políticas internas a APIs de terceros. | Utiliza FastEmbed y Qdrant localmente para que la vectorización y búsqueda no salgan del servidor. |
+| **Salida** | Validación Post-Generación | Alucinaciones del LLM o incumplimiento de reglas de seguridad. | Re-evalúa la respuesta generada por el LLM contra la lista de términos bloqueados antes de enviarla. |
+| **Arquitectura** | Aislamiento Hexagonal | Mezcla de lógica de negocio con código de infraestructura. | Desacopla las reglas de seguridad en `domain_config.json`, permitiendo auditorías sin cambiar el código base. |
 
 ### 4. Robustez y Estabilidad
 - **Migraciones Automáticas**: El backend ejecuta `Base.metadata.create_all` al arrancar, asegurando que tablas como `chat_messages` existan sin intervención manual.
