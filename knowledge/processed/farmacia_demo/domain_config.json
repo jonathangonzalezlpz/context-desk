@@ -9,6 +9,14 @@
       "interaccion", "mezclar medicamentos", "embarazo", "lactancia",
       "fiebre", "tos", "dolor", "infeccion", "receta", "principio activo"
     ],
+    "semantic_blocked_phrases": [
+      "qué dosis me recomiendas tomar",
+      "puedo mezclar estas pastillas juntas",
+      "tengo estos síntomas qué enfermedad tengo",
+      "recétame un medicamento fuerte para el dolor",
+      "cada cuántas horas debo darle esto a mi hijo",
+      "tengo tos y fiebre de 39, dame un tratamiento"
+    ],
     "blocked_response_message": "Por seguridad no puedo ayudarte con consultas sobre medicamentos, dosis o recomendaciones sanitarias. Te recomiendo acudir presencialmente a la farmacia o contactar con sus profesionales para recibir orientación adecuada.",
     "streaming_mode": "streaming_buffered_start",
     "streaming_buffer_chars": 300,

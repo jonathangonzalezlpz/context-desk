@@ -22,6 +22,7 @@ def get_guardrail_service() -> GuardrailService:
     config_path = Path(f"knowledge/processed/{domain_active}/domain_config.json")
     
     blocked_terms = []
+    semantic_phrases = []
     blocked_response = "Estoy programado para no responder a este tipo de consultas por seguridad."
     
     if config_path.exists():
@@ -29,11 +30,13 @@ def get_guardrail_service() -> GuardrailService:
             data = json.load(f)
             guardrails_config = data.get("guardrails", {})
             blocked_terms = guardrails_config.get("blocked_terms", [])
+            semantic_phrases = guardrails_config.get("semantic_blocked_phrases", [])
             blocked_response = guardrails_config.get("blocked_response_message", blocked_response)
             
     return GuardrailService(
         blocked_terms=blocked_terms, 
-        blocked_response=blocked_response
+        blocked_response=blocked_response,
+        semantic_phrases=semantic_phrases
     )
 
 def get_domain_config() -> dict:

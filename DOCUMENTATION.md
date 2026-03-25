@@ -25,12 +25,21 @@ El sistema implementa múltiples capas de defensa para garantizar que el asisten
 
 | Capa | Mecanismo | Vulnerabilidad que soluciona | Cómo lo hace |
 | :--- | :--- | :--- | :--- |
-| **Entrada** | Guardrails Duros (Regex) | Consultas directas sobre medicamentos o dosis. | Intercepta el mensaje antes de llegar al LLM y bloquea términos prohibidos configurados. |
+| **Entrada** | Guardrails Duros (Regex) | Consultas directas sobre medicamentos o dosis. | Intercepta el mensaje buscando términos literales. |
+| **Entrada** | Guardrails Fuzzy (Levenshtein) | Evasiones ortográficas o errores de tipeo (ej. 1buprof3n0). | Busca coincidencias difusas (similitud >85%) de términos prohibidos. |
+| **Entrada** | Guardrails Semánticos (FastEmbed) | Intenciones sensibles o prohibidas encubiertas o parafraseadas. | Convierte el mensaje a vector y mide su distancia de coseno contra un clúster de frases prohibitivas usando BAAI/bge-small. Sin latencia ni uso de VRAM adicional. |
 | **Dominio** | Filtro de Relevancia Semántica | Consultas fuera de dominio o intentos de desvío (Prompt Injection). | Aplica heurísticas y conteo de palabras clave para declinar temas no permitidos (ej. política, alcohol). |
 | **Datos** | RAG e Ingesta Local | Fuga de datos sensibles o políticas internas a APIs de terceros. | Utiliza FastEmbed y Qdrant localmente para que la vectorización y búsqueda no salgan del servidor. |
 | **Salida (Bloque)** | Validación Post-Generación | Alucinaciones del LLM en flujo no-streaming. | Re-evalúa la respuesta completa del LLM contra la lista de términos bloqueados antes de enviarla. |
 | **Salida (Stream)** | StreamingGuard + Búfer de Seguridad | Contenido prohibido que el LLM emite token a token en tiempo real. | Acumula los primeros N caracteres en un búfer invisible, los valida y activa un kill-switch si detecta contenido prohibido antes de que llegue al cliente. |
-| **Arquitectura** | Aislamiento Hexagonal | Mezcla de lógica de negocio con código de infraestructura. | Desacopla las reglas de seguridad en `domain_config.json`, permitiendo auditorías sin cambiar el código base. |
+| **Arquitectura** | Aislamiento Hexagonal | Mezcla de lógica de negocio con código de infraestructura. | Desacopla reglas de seguridad en `domain_config.json`, permitiendo auditorías sin cambiar el código. |
+
+### 3.0. Validaciones Semánticas en la Entrada
+El sistema aplica un pipeline de seguridad de 3 fases antes de activar el RAG o el LLM:
+1. **Regex**: Alta velocidad, estricto.
+2. **Fuzzy Matching**: Detecta variaciones ortográficas intencionadas como "am0xicilin4" o "paracetamolll".
+3. **Clasificación Semántica por Vectores**: Soluciona consultas estructuradas donde el usuario solicita acciones o temas restringidos sin usar palabras bloqueadas explícitas (ej. dependiendo del dominio, podría interceptar diagnósticos encubiertos, asesoramiento financiero indebido o intenciones inapropiadas).
+   * **Decisión Técnica**: En lugar de utilizar LLMs en la nube o cargar un segundo LLM local en memoria como juez (lo que añadiría fuerte latencia o colapsaría los 16GB de VRAM), se utiliza la biblioteca `FastEmbed` que ya acompaña al RAG local. Se ejecuta en milisegundos sobre la CPU utilizando el modelo `BAAI/bge-small-en-v1.5`, comparando matemáticamente la intención de la frase (distancia coseno > 0.82) contra un clúster de frases prohibidas inyectadas desde el `domain_config.json`.
 
 ### 3.1. Streaming Seguro: Modos de Operación (`StreamingGuard`)
 
@@ -61,7 +70,7 @@ Cualquier excepción dentro del guardrail (timeout, error de clasificación, etc
 **Latencia añadida**: media-alta (pause each window).
 
 #### Modo 4: `streaming_disabled`
-**Para**: Domíneos donde la prioridad es la seguridad absoluta sobre la velocidad de respuesta percibida.
+**Para**: Dominios donde la prioridad es la seguridad absoluta sobre la velocidad de respuesta percibida.
 **Comportamiento**: El servidor consume **todos** los tokens internamente, valida la respuesta completa y sólo entonces la envía al cliente en un único bloque. No hay streaming real.
 **Latencia añadida**: alta (el usuario espera toda la generación antes de ver algo).
 

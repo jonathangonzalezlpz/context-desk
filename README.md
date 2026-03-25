@@ -27,7 +27,9 @@ El proyecto sigue una **Arquitectura Hexagonal (Puertos y Adaptadores)**, lo que
 
 ### 1. `backend/` (El Núcleo)
 Gestiona el ciclo de vida completo de la petición:
-*   **Filtros y Guards**: Interceptores de entrada/salida y un **StreamingGuard** que inspecciona respuestas token a token con un *kill-switch* para evitar fugas de información.
+*   **Filtros y Guards (Pipeline Seguridad de 3 Fases)**: 
+    *   **Input Guardrails**: Evaluador sintáctico (Regex y Fuzzy Matching difuso) y un clasificador semántico sin latencia que analiza intenciones matemáticas mediante **FastEmbed local** (evitando usar un segundo LLM). 
+    *   **Output Guardrails**: Interceptores de salida y un **StreamingGuard** que inspecciona la respuesta token-a-token aplicando un *kill-switch* para evitar fugas médicas en tiempo real.
 *   **Orquestación**: Coordina la búsqueda en el catálogo, la recuperación semántica (RAG) y la llamada al modelo de lenguaje.
 *   **Persistencia**: Gestión de memoria de sesión en PostgreSQL.
 
