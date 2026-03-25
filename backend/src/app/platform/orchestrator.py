@@ -1,6 +1,7 @@
 import os
 from backend.src.app.domain.chat.models import IntentType, ChatResponse
 from backend.src.app.platform.guardrails.service import GuardrailService
+from backend.src.app.platform.guardrails.streaming_guard import StreamingGuard
 from backend.src.app.platform.rag.service import RagService
 from backend.src.app.infrastructure.repositories.catalog import CatalogRepository
 from backend.src.app.infrastructure.database.models import ChatMessageModel
@@ -18,7 +19,8 @@ class ChatOrchestrator:
         rag_service: RagService,
         catalog_repository: CatalogRepository,
         system_prompt: str = "Eres un asistente virtual servicial.",
-        relevancy_config: dict = None
+        relevancy_config: dict = None,
+        streaming_config: dict | None = None
     ):
         self.guardrails = guardrail_service
         self.rag = rag_service
@@ -26,6 +28,7 @@ class ChatOrchestrator:
         self.db: Session = catalog_repository.db
         self.system_prompt = system_prompt
         self.relevancy_config = relevancy_config or {}
+        self.streaming_config = streaming_config or {}
         
         # Determine LLM Provider from env (defaulting to Mock if no keys)
         provider = os.environ.get("PROVIDER_SELECTED", "").lower()
@@ -153,20 +156,21 @@ class ChatOrchestrator:
     def stream_message(self, session_id: str, user_message: str):
         """
         Generator for streaming tokens and persisting history.
+        Applies configurable security modes via StreamingGuard.
         """
         try:
-            # 1. Hard Guardrail Check
+            # 1. Hard Guardrail Check (Input)
             is_safe, reason = self.guardrails.is_safe_message(user_message)
             if not is_safe:
-                yield f"ERROR: {self.guardrails.get_blocked_response()}"
+                yield self.guardrails.get_blocked_response()
                 return
 
             # 2. Intent Classification
-            intent = self.guardrails.classify_intent_heuristic(user_message)
-            
+            self.guardrails.classify_intent_heuristic(user_message)
+
             # 3. Context Construction (Dynamic Prompt)
             system_context = self.system_prompt + "\n\n"
-            
+
             # Catalog Logic (Dynamic from Config)
             catalog_keywords = self.relevancy_config.get("catalog_trigger_keywords", [])
             if any(word in user_message.lower() for word in catalog_keywords):
@@ -177,19 +181,19 @@ class ChatOrchestrator:
                         stock_msg = "En stock" if p.in_stock else "Agotado"
                         catalog_context += f"- {p.name} ({p.brand}): {p.price_cents / 100:.2f}€ - {stock_msg}\n"
                     system_context += catalog_context
-                    
+
             rag_context = self.rag.retrieve_context(user_message)
             system_context += f"Contexto de la base de conocimiento:\n{rag_context}"
 
             # 3.5. Semantic Relevancy Check
             if not self.is_relevant_to_domain(user_message, system_context):
-                yield "Lo siento, solo puedo ayudarte con consultas relacionadas con la farmacia, salud general y nuestro catálogo de productos. No puedo responder sobre otros temas."
+                yield self.guardrails.get_blocked_response()
                 return
 
-            # 4. LLM Generation with Streaming
+            # 4. LLM Generation with Guarded Streaming
             full_content = ""
             if self.llm:
-                # Load last 10 messages for context (wrapped in try for DB robustness)
+                # Load last 10 messages for context
                 history = []
                 try:
                     history = self.db.query(ChatMessageModel).filter(
@@ -205,13 +209,33 @@ class ChatOrchestrator:
                     else:
                         messages.append(AIMessage(content=msg.content))
                 messages.append(HumanMessage(content=user_message))
-                
-                for chunk in self.llm.stream(messages):
-                    token = chunk.content
+
+                # Build the raw LLM token stream
+                def raw_token_stream():
+                    for chunk in self.llm.stream(messages):
+                        yield chunk.content
+
+                # Instantiate StreamingGuard with domain config values
+                guard = StreamingGuard(
+                    guardrail=self.guardrails,
+                    mode=self.streaming_config.get("mode", "streaming_buffered_start"),
+                    buffer_chars=self.streaming_config.get("buffer_chars", 300),
+                    ux_messages=self.streaming_config.get("ux_messages"),
+                    blocked_response=self.streaming_config.get(
+                        "blocked_response",
+                        self.guardrails.get_blocked_response()
+                    ),
+                )
+
+                # Emit a UX placeholder while the buffer accumulates
+                yield guard.get_ux_placeholder() + "\n\n"
+
+                # Stream guarded tokens to the client
+                for token in guard.wrap(raw_token_stream()):
                     full_content += token
                     yield token
-                
-                # Save User and Assistant messages after stream completes
+
+                # Persist conversation history after stream completes
                 try:
                     self.db.add(ChatMessageModel(session_id=session_id, role="user", content=user_message))
                     self.db.add(ChatMessageModel(session_id=session_id, role="assistant", content=full_content))
@@ -221,6 +245,7 @@ class ChatOrchestrator:
                     self.db.rollback()
             else:
                 yield "MODO MOCK: Streaming no disponible sin LLM."
+
         except Exception as e:
             import traceback
             print(f"❌ CRITICAL ERROR in stream_message: {e}")

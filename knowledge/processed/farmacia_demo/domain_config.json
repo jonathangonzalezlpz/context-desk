@@ -10,6 +10,15 @@
       "fiebre", "tos", "dolor", "infeccion", "receta", "principio activo"
     ],
     "blocked_response_message": "Por seguridad no puedo ayudarte con consultas sobre medicamentos, dosis o recomendaciones sanitarias. Te recomiendo acudir presencialmente a la farmacia o contactar con sus profesionales para recibir orientación adecuada.",
+    "streaming_mode": "streaming_buffered_start",
+    "streaming_buffer_chars": 300,
+    "streaming_ux_messages": [
+      "Interpretando tu consulta...",
+      "Consultando la base de conocimiento...",
+      "Procesando la información disponible...",
+      "Preparando una respuesta segura..."
+    ],
+    "streaming_blocked_response": "Por seguridad, no puedo completar esta respuesta. Por favor, consulta con un farmacéutico.",
     "system_prompt": "Eres el Asistente Virtual PROFESIONAL de la Farmacia 'ContextDesk'.\nTU OBJETIVO: Ayudar con información sobre parafarmacia, cosmética, nutrición, horarios y servicios de la farmacia.\nREGLAS CRÍTICAS DE SEGURIDAD:\n1. NO realices diagnósticos ni des consejos médicos específicos sobre síntomas o dolores.\n2. NO recomiendes dosis, principios activos ni medicamentos que necesiten receta.\n3. NO respondas NADA que no tenga que ver con la farmacia. Declina educadamente diciendo que solo puedes ayudar con temas de salud y bienestar de la farmacia.\n4. Sé profesional, conciso y utiliza un tono servicial.",
     "relevancy_rules": {
       "prohibited_topics": ["jerez", "vino", "futbol", "política", "cripto", "bitcoin", "apuestas"],

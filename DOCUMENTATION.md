@@ -28,8 +28,55 @@ El sistema implementa múltiples capas de defensa para garantizar que el asisten
 | **Entrada** | Guardrails Duros (Regex) | Consultas directas sobre medicamentos o dosis. | Intercepta el mensaje antes de llegar al LLM y bloquea términos prohibidos configurados. |
 | **Dominio** | Filtro de Relevancia Semántica | Consultas fuera de dominio o intentos de desvío (Prompt Injection). | Aplica heurísticas y conteo de palabras clave para declinar temas no permitidos (ej. política, alcohol). |
 | **Datos** | RAG e Ingesta Local | Fuga de datos sensibles o políticas internas a APIs de terceros. | Utiliza FastEmbed y Qdrant localmente para que la vectorización y búsqueda no salgan del servidor. |
-| **Salida** | Validación Post-Generación | Alucinaciones del LLM o incumplimiento de reglas de seguridad. | Re-evalúa la respuesta generada por el LLM contra la lista de términos bloqueados antes de enviarla. |
+| **Salida (Bloque)** | Validación Post-Generación | Alucinaciones del LLM en flujo no-streaming. | Re-evalúa la respuesta completa del LLM contra la lista de términos bloqueados antes de enviarla. |
+| **Salida (Stream)** | StreamingGuard + Búfer de Seguridad | Contenido prohibido que el LLM emite token a token en tiempo real. | Acumula los primeros N caracteres en un búfer invisible, los valida y activa un kill-switch si detecta contenido prohibido antes de que llegue al cliente. |
 | **Arquitectura** | Aislamiento Hexagonal | Mezcla de lógica de negocio con código de infraestructura. | Desacopla las reglas de seguridad en `domain_config.json`, permitiendo auditorías sin cambiar el código base. |
+
+### 3.1. Streaming Seguro: Modos de Operación (`StreamingGuard`)
+
+El componente `StreamingGuard` (`backend/src/app/platform/guardrails/streaming_guard.py`) envuelve el flujo de tokens del LLM y aplica diferentes estrategias de seguridad según la sensibilidad del dominio. El modo activo se configura por dominio en `domain_config.json`.
+
+#### Principio Fail-Closed
+Cualquier excepción dentro del guardrail (timeout, error de clasificación, etc.) se trata como **contenido inseguro**. El sistema nunca falla en modo abierto.
+
+#### Modo 1: `streaming_unrestricted`
+**Para**: Entornos no sensibles (demos internas, pruebas de desarrollo).
+**Comportamiento**: Los tokens fluyen directamente del LLM al cliente sin ningún filtro de salida.
+**Latencia añadida**: 0ms.
+
+#### Modo 2: `streaming_buffered_start` *(modo por defecto en Farmacia)*
+**Para**: Dominios con alta sensibilidad como sanidad, legal o finanzas.
+**Comportamiento**:
+1. El cliente recibe un mensaje de espera seguro y predefinido (ej. *"Interpretando tu consulta..."*).
+2. Los primeros `N` caracteres de la respuesta del LLM se acumulan en un búfer invisible.
+3. Cuando el búfer alcanza el umbral:
+   - Si es **seguro**: se libera el contenido acumulado y el resto de la respuesta fluye libremente.
+   - Si es **inseguro**: se activa el **kill-switch**, se bloquea el generador y se devuelve la respuesta de seguridad predefinida. Nada del contenido original llega al cliente.
+4. Si la respuesta completa es más corta que el búfer, se valida igualmente antes de enviarse.
+**Latencia añadida**: baja (el tiempo que tarda el LLM en generar `buffer_chars` caracteres).
+
+#### Modo 3: `streaming_full_guarded`
+**Para**: Dominios de máxima sensibilidad donde la respuesta puede ser larga y compleja.
+**Comportamiento**: Revisión por ventana deslizante a lo largo de **toda la respuesta**. Cada `N` caracteres, se re-valida el texto acumulado total. Si el guardrail detecta contenido prohibido en cualquier ventana, activa inmediatamente el kill-switch y corta el stream.
+**Latencia añadida**: media-alta (pause each window).
+
+#### Modo 4: `streaming_disabled`
+**Para**: Domíneos donde la prioridad es la seguridad absoluta sobre la velocidad de respuesta percibida.
+**Comportamiento**: El servidor consume **todos** los tokens internamente, valida la respuesta completa y sólo entonces la envía al cliente en un único bloque. No hay streaming real.
+**Latencia añadida**: alta (el usuario espera toda la generación antes de ver algo).
+
+#### Configuración en `domain_config.json`
+```json
+"guardrails": {
+  "streaming_mode": "streaming_buffered_start",
+  "streaming_buffer_chars": 300,
+  "streaming_ux_messages": [
+    "Interpretando tu consulta...",
+    "Preparando una respuesta segura..."
+  ],
+  "streaming_blocked_response": "Por seguridad, no puedo completar esta respuesta."
+}
+```
 
 ### 4. Robustez y Estabilidad
 - **Migraciones Automáticas**: El backend ejecuta `Base.metadata.create_all` al arrancar, asegurando que tablas como `chat_messages` existan sin intervención manual.

@@ -53,7 +53,9 @@ async function onSubmit(e) {
     const reader = res.body.getReader();
     const decoder = new TextDecoder();
     let botMessageText = "";
-    
+    let isFirstChunk = true;
+    let statusEl = null;
+
     // Create an empty bot message element that we'll update
     const botMsgEl = createBotMessageElement("", false);
     const bodyEl = botMsgEl.querySelector(".message-body");
@@ -62,11 +64,36 @@ async function onSubmit(e) {
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
-      
+
       const chunk = decoder.decode(value, { stream: true });
+
+      if (isFirstChunk) {
+        // First chunk is always the UX placeholder from StreamingGuard (ends with \n\n)
+        // Render it as an italic status line, not as the real response
+        if (chunk.endsWith("\n\n")) {
+          statusEl = document.createElement("div");
+          statusEl.className = "message-status";
+          statusEl.innerHTML = `
+            <div class="typing-dots">
+              <span></span><span></span><span></span>
+            </div>
+            <span>${chunk.trim()}</span>
+          `;
+          bodyEl.appendChild(statusEl);
+          scrollToBottom();
+          isFirstChunk = false;
+          continue; // wait for real content
+        }
+        isFirstChunk = false;
+      }
+
+      // Real content is flowing — remove the status placeholder if it exists
+      if (statusEl) {
+        statusEl.remove();
+        statusEl = null;
+      }
+
       botMessageText += chunk;
-      
-      // Update UI in real-time
       bodyEl.innerHTML = formatText(botMessageText);
       scrollToBottom();
     }

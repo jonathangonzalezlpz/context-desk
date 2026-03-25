@@ -54,14 +54,22 @@ def get_chat_orchestrator(
 ) -> ChatOrchestrator:
     config = get_domain_config()
     guardrails_conf = config.get("guardrails", {})
-    
+
     relevancy_rules = guardrails_conf.get("relevancy_rules", {})
     relevancy_rules["catalog_trigger_keywords"] = config.get("catalog", {}).get("catalog_trigger_keywords", [])
-    
+
+    streaming_config = {
+        "mode": guardrails_conf.get("streaming_mode", "streaming_buffered_start"),
+        "buffer_chars": guardrails_conf.get("streaming_buffer_chars", 300),
+        "ux_messages": guardrails_conf.get("streaming_ux_messages"),
+        "blocked_response": guardrails_conf.get("streaming_blocked_response"),
+    }
+
     return ChatOrchestrator(
         guardrail_service=guardrail_service,
         rag_service=rag_service,
         catalog_repository=catalog_repository,
         system_prompt=guardrails_conf.get("system_prompt", "Eres un asistente virtual."),
-        relevancy_config=relevancy_rules
+        relevancy_config=relevancy_rules,
+        streaming_config=streaming_config
     )

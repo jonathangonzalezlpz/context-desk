@@ -303,6 +303,16 @@ body {
   margin-bottom: 8px;
 }
 
+/* UX placeholder shown while StreamingGuard buffer validates */
+.message-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  font-style: italic;
+  color: var(--text-secondary);
+}
+
 /* Welcome list */
 .welcome-list {
   list-style: none;

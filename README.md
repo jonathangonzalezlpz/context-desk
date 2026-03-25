@@ -27,7 +27,7 @@ El proyecto sigue una **Arquitectura Hexagonal (Puertos y Adaptadores)**, lo que
 
 ### 1. `backend/` (El Núcleo)
 Gestiona el ciclo de vida completo de la petición:
-*   **Filtros y Guards**: Interceptores de entrada/salida que aseguran que el bot no se salga del tema permitido.
+*   **Filtros y Guards**: Interceptores de entrada/salida y un **StreamingGuard** que inspecciona respuestas token a token con un *kill-switch* para evitar fugas de información.
 *   **Orquestación**: Coordina la búsqueda en el catálogo, la recuperación semántica (RAG) y la llamada al modelo de lenguaje.
 *   **Persistencia**: Gestión de memoria de sesión en PostgreSQL.
 
@@ -114,6 +114,8 @@ Define en `knowledge/processed/<nombre_dominio>/domain_config.json`:
 - `domain_id`: identificador único del dominio.
 - `guardrails.blocked_terms`: lista de términos a bloquear.
 - `guardrails.blocked_response_message`: mensaje de respuesta cuando se bloquea.
+- `guardrails.streaming_mode`: modo de seguridad para tokens en tiempo real (ej. `streaming_buffered_start`).
+- `guardrails.streaming_buffer_chars`: tamaño del búfer inicial antes de liberar tokens al usuario.
 - `catalog.source_csv`: ruta al CSV de productos.
 - `catalog.column_map`: mapeo de columnas del CSV al esquema interno.
 - `knowledge.files`: lista de archivos Markdown a indexar en Qdrant.
